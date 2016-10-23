@@ -32,7 +32,9 @@ module BCP
                 if edge_start == edge_end
                   edge_count -= 1
                 else
-                  edge_connections.push({ start: edge_start, end: edge_end, weight: edge_weight })
+                  edge_connections.push(
+                    { start: edge_start - 1, end: edge_end - 1, weight: edge_weight }
+                  )
                 end
 
               when "n"
