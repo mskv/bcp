@@ -18,8 +18,7 @@ module BCP
       assessed_population =
         population.map { |genome| genome_assessor.call(graph: graph, genome: genome) }
 
-      while solution_assessor.continue?
-        puts assessed_population.reduce(0) { |acc, genome| acc + genome.score } / assessed_population.count
+      while solution_assessor.continue?(population: assessed_population)
         population = crossover_picker.call(genomes: assessed_population)
           .map { |pair| crossover_performer.call(first_genome: pair[0], second_genome: pair[1]) }
           .flatten

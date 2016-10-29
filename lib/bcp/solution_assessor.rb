@@ -5,10 +5,12 @@ module BCP
       @counter = 0
     end
 
-    def continue?
+    def continue?(population:)
+      config.observer.observe(population_number: counter, population: population)
+
       bump_counter
 
-      counter < 50000
+      counter < 500
     end
 
     private

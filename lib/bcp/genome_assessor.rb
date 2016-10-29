@@ -7,6 +7,7 @@ module BCP
     end
 
     def call(graph:, genome:)
+      missed_colours = 0
       score = genome.colouring
         .each_with_index.reduce(@config.initial_genome_score) do |score, (first_colour, first_node)|
           genome.colouring.drop(first_node + 1)
@@ -24,6 +25,7 @@ module BCP
               if colour_distance >= edge_weight
                 score += config.prize_for_correct_colour_distance
               else
+                missed_colours += 1
                 score += config.punishment_for_incorrect_colour_distance.call(
                   colour_distance, edge_weight
                 )
@@ -33,7 +35,7 @@ module BCP
             end
         end
       score += config.prize_for_colour_count.call(genome.colouring.max, graph.node_count)
-      BCP::Genome.new(colouring: genome.colouring, score: score)
+      BCP::Genome.new(colouring: genome.colouring, score: score, missed_colours: missed_colours)
     end
 
     private

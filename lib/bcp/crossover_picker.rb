@@ -26,7 +26,7 @@ module BCP
       sorted_genomes.each_with_index.map do |genome, index|
         ran = @config.random_generator.rand
         pick = genomes_with_probability_ranges.select do |genome_with_range|
-          genome_with_range[:lo] <= ran #&& genome_with_range[:hi] > ran
+          genome_with_range[:lo] <= ran
         end.last[:genome]
         [genome, pick]
       end.last(sorted_genomes.count / 2)
