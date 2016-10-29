@@ -1,6 +1,8 @@
 $:.unshift File.dirname(__FILE__)
 require "pry"
 require "ostruct"
+require "csv"
+require "fileutils"
 
 require "bcp/observer"
 require "bcp/file_reader"
@@ -13,13 +15,14 @@ require "bcp/crossover_performer"
 require "bcp/mutator"
 
 GRAPH_FILE_PATH = File.expand_path(File.join(File.dirname(__FILE__), "../external/GEOM30.col"))
+CSV_FILE_PATH = File.expand_path(File.join(File.dirname(__FILE__), "../results/geom_30.csv"))
 
 observer = BCP::Observer.new
 random_generator = Random.new(115032730400174366788466674494640623225)
 config = OpenStruct.new(
   observer: observer,
   random_generator: random_generator,
-  initial_genome_score: 50,
+  initial_genome_score: 0,
   punishment_for_same_colour: -1,
   prize_for_correct_colour_distance: 1,
   punishment_for_incorrect_colour_distance: -> (colour_distance, edge_weight) {
@@ -48,3 +51,16 @@ solver = BCP::Solver.new(
 )
 
 solver.solve(graph: graph)
+
+FileUtils::mkdir_p File.dirname CSV_FILE_PATH
+CSV.open(CSV_FILE_PATH, "wb") do |csv|
+  csv << ["population_number", "avg_score", "avg_missed_colours", "avg_max_colour"]
+  observer.observations.each_with_index do |observation, index|
+    csv << [
+      index + 1,
+      observation[:avg_score],
+      observation[:avg_missed_colours],
+      observation[:avg_max_colour]
+    ]
+  end
+end

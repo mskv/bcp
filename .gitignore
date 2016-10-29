@@ -1,3 +1,4 @@
 Gemfile.lock
 external/*
 !external/*.sh
+results
